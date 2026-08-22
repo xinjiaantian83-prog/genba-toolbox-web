@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://xinjiaantian83-prog.github.io/genba-toolbox-web/sitemap.xml
