@@ -10,6 +10,7 @@ BASE = "https://xinjiaantian83-prog.github.io/genba-toolbox-web"
 PUBLIC = "/genba-toolbox-web"
 APP_STORE = "https://apps.apple.com/jp/app/%E7%8F%BE%E5%A0%B4%E9%9B%BB%E5%8D%93/id6776547872"
 GOOGLE_PLAY = "https://play.google.com/store/apps/details?id=com.genbatoolbox.genbacalcnew"
+FEATURE_REQUEST_ENDPOINT = "https://usebasin.com/f/13a5335914bd"
 
 PAGES = [
     {
@@ -149,7 +150,8 @@ def head(title: str, description: str, url: str, image: str) -> str:
   <meta property="og:locale" content="ja_JP">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="{PUBLIC}/assets/icon.png">
-  <link rel="stylesheet" href="{PUBLIC}/assets/style.css">'''
+  <link rel="stylesheet" href="{PUBLIC}/assets/style.css">
+  <link rel="stylesheet" href="{PUBLIC}/assets/feature-request.css">'''
 
 
 def cards(current: str | None = None) -> str:
@@ -170,6 +172,27 @@ def badges(page: str) -> str:
       <a class="store-link" data-store="app_store" data-page="{page}" href="{app_href}" target="_blank" rel="noopener noreferrer"><img src="{PUBLIC}/assets/app-store-badge.svg" alt="App Storeからダウンロード" width="240" height="80"></a>
       <a class="store-link" data-store="google_play" data-page="{page}" href="{play_href}" target="_blank" rel="noopener noreferrer"><img src="{PUBLIC}/assets/google-play-badge.png" alt="Google Playで手に入れよう" width="240" height="93"></a>
     </div>'''
+
+
+def feature_request() -> str:
+    return f'''<section class="feature-request" aria-labelledby="feature-request-title">
+    <div class="feature-request-intro">
+      <div><p class="eyebrow">FEATURE REQUEST</p><h2 id="feature-request-title">現場で欲しい計算、ありませんか？</h2><p>GENBA TOOLBOXでは、現場で役立つ新しい計算ツール・機能のご要望を募集しています。</p></div>
+      <button class="feature-request-toggle" type="button" aria-expanded="false" aria-controls="feature-request-form">欲しい機能を送る</button>
+    </div>
+    <form id="feature-request-form" class="feature-request-form" action="{FEATURE_REQUEST_ENDPOINT}" method="POST" hidden novalidate>
+      <input type="hidden" name="フォーム種別" value="GENBA TOOLBOX 機能要望">
+      <input type="hidden" name="source" value="web">
+      <input type="hidden" name="送信日時" value="">
+      <input type="hidden" name="現在ページURL" value="">
+      <label>欲しい機能・計算内容<span>必須</span><textarea name="欲しい機能・計算内容" rows="4" required maxlength="2000" placeholder="例：階段の段数と蹴上げを計算したい"></textarea></label>
+      <label>どんな場面で使うか<textarea name="どんな場面で使うか" rows="3" maxlength="2000" placeholder="例：現調時にその場で確認したい"></textarea></label>
+      <label>職種<input name="職種" type="text" maxlength="100" autocomplete="organization-title" placeholder="例：外構、土木、建設"></label>
+      <label>メールアドレス<small>任意・返信希望者のみ</small><input name="email" type="email" inputmode="email" autocomplete="email" maxlength="254" placeholder="name@example.com"></label>
+      <button class="feature-request-submit" type="submit">送信する</button>
+      <p class="feature-request-status" role="status" aria-live="polite"></p>
+    </form>
+  </section>'''
 
 
 def page_html(page: dict) -> str:
@@ -219,12 +242,13 @@ def home_html() -> str:
   <header class="site-header"><a class="brand" href="{PUBLIC}/"><img src="{PUBLIC}/assets/icon.png" alt="" width="42" height="42"><span>現場電卓<small>GENBA TOOLBOX</small></span></a></header>
   <main><section class="home-hero"><div><p class="eyebrow">職人のための無料計算アプリ</p><h1>現場の計算を、<em>もっと早く。</em></h1><p>勾配・カーポート、R・真円、土間、鉄筋など。計算方法を確認して、そのまま無料アプリで使えます。</p>{badges('home')}</div><img src="{PUBLIC}/images/home.png" alt="現場電卓のアプリ画面" width="420" height="910"></section>
   <section class="tools"><div class="section-heading"><p class="eyebrow">CALCULATION GUIDE</p><h2>計算方法を選ぶ</h2></div><div class="tool-grid">{cards()}</div></section>
+  {feature_request()}
   <aside class="notice"><strong>参考値としてご利用ください</strong><p>実施工では設計図書、構造条件、法令、メーカー資料、現場責任者の判断を優先してください。</p></aside></main>
   <footer><a href="{PUBLIC}/privacy/">プライバシーポリシー</a><span>© GENBA TOOLBOX</span></footer><script src="{PUBLIC}/assets/analytics.js" defer></script></body></html>'''
 
 
 def privacy_html() -> str:
-    return f'''<!doctype html><html lang="ja"><head>{head("プライバシーポリシー｜現場電卓", "現場電卓Webサイトのプライバシーポリシーです。", BASE + "/privacy/", "images/og-home.png")}</head><body><header class="site-header"><a class="brand" href="{PUBLIC}/"><img src="{PUBLIC}/assets/icon.png" alt="" width="42" height="42"><span>現場電卓<small>GENBA TOOLBOX</small></span></a></header><main><article class="legal"><h1>プライバシーポリシー</h1><p>本サイトでは、利用状況の把握と改善のため、リンクのクリック元を識別できるパラメータを使用する場合があります。個人を直接特定する情報を本サイト上で入力・収集する機能は設けていません。</p><h2>外部サービス</h2><p>App StoreおよびGoogle Playへのリンク先では、各事業者のプライバシーポリシーが適用されます。</p><h2>変更</h2><p>必要に応じて本方針を変更する場合があります。</p></article></main><footer><a href="{PUBLIC}/">トップへ戻る</a><span>© GENBA TOOLBOX</span></footer></body></html>'''
+    return f'''<!doctype html><html lang="ja"><head>{head("プライバシーポリシー｜現場電卓", "現場電卓Webサイトのプライバシーポリシーです。", BASE + "/privacy/", "images/og-home.png")}</head><body><header class="site-header"><a class="brand" href="{PUBLIC}/"><img src="{PUBLIC}/assets/icon.png" alt="" width="42" height="42"><span>現場電卓<small>GENBA TOOLBOX</small></span></a></header><main><article class="legal"><h1>プライバシーポリシー</h1><p>本サイトでは、利用状況の把握と改善のため、リンクのクリック元を識別できるパラメータを使用する場合があります。</p><h2>機能要望フォーム</h2><p>機能要望フォームでは、入力された要望内容、利用場面、職種、任意で入力されたメールアドレスに加え、送信元、送信日時、送信時のページURLを取得します。いただいた情報は、機能改善、開発候補の検討および返信を希望された方への連絡に使用します。送信処理にはBasinを利用します。</p><h2>外部サービス</h2><p>App Store、Google PlayおよびBasinでは、各事業者のプライバシーポリシーが適用されます。</p><h2>変更</h2><p>必要に応じて本方針を変更する場合があります。</p></article></main><footer><a href="{PUBLIC}/">トップへ戻る</a><span>© GENBA TOOLBOX</span></footer></body></html>'''
 
 
 def build() -> None:
