@@ -8,7 +8,7 @@ OUT=ROOT/'web'
 # 独自ドメイン取得後は、この1か所だけ正規URLへ変更する。
 SITE_ORIGIN='https://genba-toolbox.com'
 # GA4データストリーム作成後、Measurement IDをこの1か所へ設定する。
-GA4_MEASUREMENT_ID='G-POCVQ4SNYR'
+GA4_MEASUREMENT_ID='G-P0CVQ4SNYR'
 APP_STORE_URL='https://apps.apple.com/jp/app/%E7%8F%BE%E5%A0%B4%E9%9B%BB%E5%8D%93/id6776547872'
 GOOGLE_PLAY_URL='https://play.google.com/store/apps/details?id=com.genbatoolbox.genbacalcnew'
 CWEB_URL='https://construction-web-terra.com/'
