@@ -19,7 +19,7 @@ TOOLS=[
  ('density','比重','材料の体積と比重から重量を概算'),
  ('memo','メモ','寸法・材料・連絡事項を端末内へ自動保存'),
  ('radius','R / 円','弦長と矢高からRを、直径から円周と面積を計算'),
- ('area','平面拾い','縦横寸法から平方メートルと坪を同時表示'),
+ ('area','平米・坪','縦横寸法から面積を計算し、平米と坪の相互換算も可能'),
  ('gravity','重力','重力式擁壁の底幅・断面積・コンクリート量を計算'),
  ('rebar','鉄筋','直壁の寸法・かぶり・ピッチから本数と総延長を拾う'),
  ('block','ブロック','延長と段数からブロック枚数・配筋本数を拾う'),
@@ -61,10 +61,10 @@ SEO={
   'guide':'アールモードでは弦長と矢高からR、中心角、円弧長を計算します。真円モードでは直径から円周と面積を確認できます。',
  },
  'area':{
-  'title':'平米・坪・面積計算｜㎡と坪を同時変換｜現場電卓Web',
-  'h1':'平面拾い・平米／坪計算',
-  'description':'縦横寸法から面積を㎡と坪で同時計算。コンクリート体積やメッシュ枚数も確認できる、床・敷地・人工芝・舗装向けの無料ツールです。',
-  'guide':'縦と横の寸法から平面積を㎡と坪で同時表示します。厚みを入力するとコンクリート体積、メッシュ寸法を入力すると必要枚数も確認できます。',
+  'title':'平米・坪の面積計算・換算｜㎡⇄坪 無料電卓',
+  'h1':'平米・坪の面積計算・換算',
+  'description':'縦と横の寸法から面積を平米（㎡）・坪で計算。平米から坪、坪から平米への換算にも対応した無料電卓です。床・敷地・人工芝・舗装の面積確認にも使えます。',
+  'guide':'縦・横の寸法（mm）を入力すると、面積を平米（㎡）と坪で同時に表示します。平米だけ、または坪だけ分かる場合は相互換算できます。厚みを入力するとコンクリート体積、メッシュ寸法を入力すると必要枚数も確認できます。',
  },
  'gravity':{
   'title':'重力式擁壁の底幅・断面積計算｜現場電卓Web',
@@ -143,7 +143,8 @@ def tool_page(slug,name,desc):
   rows=''.join(f'<div class="result {"hero-result" if i==0 else ""}"><span>{label}</span><output id="{ids[i]}">—</output></div>' for i,label in enumerate(RESULTS[slug]))
   diagram=f'''<section class="panel diagram-panel{' rebar-diagram' if slug=='rebar' else ''}" aria-labelledby="diagramTitle"><h2 id="diagramTitle">模式図</h2><div id="diagram" class="diagram" aria-live="polite"></div><p class="diagram-note">未入力時は説明用のサンプル図です。縮尺より入力寸法を優先してください。</p></section>''' if slug in ('slope','radius','gravity','rebar','area') else ''
   body=f'''<div class="workspace"><section class="panel"><h2>入力</h2>{FIELDS[slug]}<div class="actions"><button class="action" id="reset">リセット</button></div></section>{diagram}<section class="panel"><h2>計算結果</h2><div class="results">{rows}</div><div class="actions"><button class="action primary" id="copy">結果をコピー</button></div><p class="copy-status" id="copyStatus"></p></section></div>'''
- return f'''<!doctype html><html lang="ja"><head>{head(slug,'../')}</head><body data-tool="{slug}">{chrome('../')}<main class="shell"><section class="tool-head"><p class="eyebrow">WEB CALCULATOR</p><h1>{seo['h1']}</h1><p>{desc}</p></section>{body}<section class="seo-guide" aria-labelledby="guideTitle"><h2 id="guideTitle">この計算ツールでできること</h2><p>{seo['guide']}</p></section>{tool_links(slug)}</main>{related('../')}<footer class="footer"><div class="shell">参考値としてご利用ください。実施工は設計図書・法令・メーカー資料を優先してください。</div></footer></body></html>'''
+ area_extra='''<section class="seo-guide" aria-labelledby="areaConvertTitle"><h2 id="areaConvertTitle">平米と坪を相互換算</h2><p>平米または坪のどちらか一方を入力すると、もう一方へ換算します。1坪＝約3.305785㎡として計算します。</p><div class="workspace"><section class="panel"><div class="fields"><div class="field"><label>平米（㎡）を入力</label><input id="sqmConvert" type="number" inputmode="decimal" min="0" step="any" placeholder="100"></div><div class="result"><span>坪へ換算</span><output id="sqmToTsubo">—</output></div><div class="field"><label>坪を入力</label><input id="tsuboConvert" type="number" inputmode="decimal" min="0" step="any" placeholder="30"></div><div class="result"><span>平米へ換算</span><output id="tsuboToSqm">—</output></div></div></section></div></section><section class="seo-guide" aria-labelledby="areaUseTitle"><h2 id="areaUseTitle">面積計算の使用例</h2><p>住宅や土地の広さ確認、部屋・床・敷地・人工芝・舗装・土間コンクリートなど、一般の面積換算から建設現場の数量確認まで利用できます。</p><p><strong>計算例：</strong>縦5,000mm×横4,000mmなら20㎡、約6.05坪です。100㎡は約30.25坪、30坪は約99.17㎡です。</p></section>''' if slug=='area' else ''
+ return f'''<!doctype html><html lang="ja"><head>{head(slug,'../')}</head><body data-tool="{slug}">{chrome('../')}<main class="shell"><section class="tool-head"><p class="eyebrow">WEB CALCULATOR</p><h1>{seo['h1']}</h1><p>{desc}</p></section>{body}<section class="seo-guide" aria-labelledby="guideTitle"><h2 id="guideTitle">この計算ツールでできること</h2><p>{seo['guide']}</p></section>{area_extra}{tool_links(slug)}</main>{related('../')}<footer class="footer"><div class="shell">参考値としてご利用ください。実施工は設計図書・法令・メーカー資料を優先してください。</div></footer></body></html>'''
 def build():
  OUT.mkdir(exist_ok=True)
  (OUT/'assets').mkdir(exist_ok=True)
